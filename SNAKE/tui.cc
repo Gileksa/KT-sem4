@@ -24,12 +24,13 @@ void DrawHorisontal(int y_start, int x_start, int length)
 	int i;
 
 	GoTo(y_start, x_start);
+	printf("\e[47m");
 	for (i = 0; i < length; i++)
 	{
-		printf("*");
+		printf(" ");
 		GoTo(y_start, x_start + i + 1);
 	}
-	printf("*");				//вспомнить, как убрать эту некрасивость из кода
+	printf(" \e[0m");				//вспомнить, как убрать эту некрасивость из кода
 };
 
 void DrawVertical(int y_start, int x_start, int length)
@@ -37,12 +38,13 @@ void DrawVertical(int y_start, int x_start, int length)
 	int i;
 
 	GoTo(y_start, x_start);
+	printf("\e[47m");
 	for (i = 0; i < length; i++)
 	{
-		printf("*");
+		printf("  ");
 		GoTo((y_start + i + 1), x_start);
 	}
-	printf("*");
+	printf("  \e[0m");
 }
 
 void DrawFlame(int lines, int columns)
