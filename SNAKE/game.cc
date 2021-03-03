@@ -1,5 +1,6 @@
 #include "game.h"
 #include "tui.h"
+#include <time.h>
 
 
 Game::Game(View* v)
@@ -7,6 +8,7 @@ Game::Game(View* v)
 	myview = v;
 	struct winsize w = myview->WhatSize();
 	//printf("\n%d,%d", w.ws_col, w.ws_row);
+	srand(time(NULL));
 	int x = rand() % (w.ws_col - 3) + 2;
 	int y = rand() % (w.ws_row - 3) + 2;
 	rabbits.push_back(Rabbit(x,y));
