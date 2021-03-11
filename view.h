@@ -1,7 +1,5 @@
 #pragma once
 
-#include "game.h"
-
 class View
 {
 	virtual void draw() = 0;
