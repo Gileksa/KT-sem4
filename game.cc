@@ -18,12 +18,16 @@ Snake::Snake()
 
 Game::Game(View* v)
 {
+	int i;
 	myview = v;
 	struct winsize w = myview->WhatSize();
 	srand(time(NULL));
-	int x = rand() % (w.ws_col - 3) + 3;
-	int y = rand() % (w.ws_row - 3) + 3;
-	rabbits.push_back(Rabbit(x,y));
+	for(i = 0; i < 10; i++)
+	{
+		int x = rand() % (w.ws_col - 3) + 3;
+		int y = rand() % (w.ws_row - 3) + 3;
+		rabbits.push_back(Rabbit(x,y));
+	}
 	class Snake snake;
 	body = snake.WhatCoords();
 }; 
@@ -70,7 +74,7 @@ Snake::~Snake()
 
 };
 
-void update()
+/*void update()
 {
 
-};
+};*/
