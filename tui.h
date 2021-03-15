@@ -24,7 +24,6 @@ class Tui: public View //чтобы была возможность запуст
 	~Tui();
 
 	struct winsize WhatSize();
-	void DrawRabbit(class Rabbit rabbit);
-	void DrawSnake(list<Coord> snake);
+	void DrawList(list<Coord> object, int color);
 
 };
