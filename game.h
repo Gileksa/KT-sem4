@@ -48,11 +48,11 @@ class Game
 	list<class Rabbit> rabbits;
 	list<Coord> body;
 
-	void update();
-
 	public:
 	Game(View* v);
 	~Game();
 	list<Rabbit> Rabbits();
 	list<Coord> Snake();
+//
+//	void update();
 };
