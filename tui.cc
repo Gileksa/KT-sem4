@@ -97,17 +97,6 @@ Tui::~Tui()
 	
 };
 
-
-//это надо переделать. пусть оно просто рисует список, хотя бы всё белого цвета
-
-
-/*void Tui::DrawRabbit(class Rabbit rabbit)
-{
-	Coord c = rabbit.WhatCoords();
-	GoTo(c.y, c.x);
-	printf("\e[46m \e[0m");
-};*/
-
 void Tui::DrawList(list<Coord> object, int color)
 {
 	SetColor(color);
@@ -118,19 +107,6 @@ void Tui::DrawList(list<Coord> object, int color)
 	};
 	SetColor(0);
 }
-
-/*void Tui::DrawSnake(list<Coord> snake)
-{
-	printf("\e[43m");
-	for(Coord it : snake)
-	{
-		GoTo(it.y,it.x);
-		printf(" ");
-	};
-
-	printf("\e[0m");
-};*/
-
 
 
 
