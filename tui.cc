@@ -1,4 +1,5 @@
 #include "tui.h"
+#include <poll.h>
 
 using namespace std;
 
@@ -11,7 +12,13 @@ Tui :: Tui()
 
 	onwinch = bind(&Tui::draw, this);
 	signal(SIGWINCH, &Tui::winch);		//для ресайза
-};
+//tcgetattr, запомнили перед тем как испортить cfmakerow, tcsetattr прочитать-поменять-переделать 
+}
+
+Tui::~Tui()
+{
+	//tcsetattr старых значений - вспомнить
+}
 
 struct winsize Tui::WhatSize()
 {
@@ -92,22 +99,69 @@ void Tui :: draw()
  	DrawFrame(w.ws_row,w.ws_col);
 };
 
-Tui::~Tui()
-{
-	
-};
 
-void Tui::DrawList(list<Coord> object, int color)
+
+void Tui::DrawList(list<pair<int,int>> object, int color)
 {
 	SetColor(color);
-	for(Coord it : object)
+	for(pair<int,int> it : object)
 	{
-		GoTo(it.y,it.x);
-		printf(" ");
+		GoTo(it.second,it.first);
+		Put(1);
 	};
 	SetColor(0);
 }
 
+void Tui::DrawSegment(pair<int, int> object, int color)
+{
+	SetColor(color);
+	GoTo(object.second,object.first);
+	Put(1);
+	SetColor(0);
+}
 
+void Tui::ClearSegment(pair<int, int> object)
+{
+	DrawSegment(object, 0);
+};
 
+void Tui::SetOnTime(int timeout, timerfn fn)
+{
+	timer.first = timeout;
+	timer.second = fn;
+}
+
+void Tui::SetOnKey(keyfn fn)
+{
+	keys.push_back(fn);
+}
+
+struct pollfd fds = {0, POLLIN};
+
+void Tui::runloop()
+{
+	int p;
+	running = true;
+	while(running)
+	{
+		p = poll(&fds, 1, timer.first);
+		if(p == 0)
+		{
+			timer.second();
+		};
+		if(p == 1)
+		{
+			int c = getchar();
+			for(auto fn : keys)
+			{
+				fn(c);
+			}
+		};
+	}
+};
+
+void Tui::quit()
+{
+	running = false;
+}
 

@@ -1,7 +1,5 @@
 #pragma once
 
-//#include <utility>
-//#include "tui.h"
 #include <list>
 #include <iostream>
 
@@ -9,21 +7,14 @@ using namespace std;
 
 class View;
 
-struct Coord
-{
-	int x;
-	int y;
-};
-
-
 class Rabbit
 {
 	private:
-	Coord c;
+	pair<int,int> c;
 
 	public:
 	Rabbit(int x, int y);
-	struct Coord WhatCoords();
+	pair<int,int> WhatCoords();
 	~Rabbit();
 };
 
@@ -32,27 +23,31 @@ enum Direction {LEFT, RIGHT, UP, DOWN};
 class Snake
 {
 	private:
-	list<Coord> body;
+	list<pair<int,int>> body;
 	Direction direct;
 	
 	public:
 	Snake();
 	~Snake();
-	list<Coord> WhatCoords();
+	list<pair<int,int>> WhatCoords();
+	Direction WhatDirect();
+	void NewHead(pair<int,int> head);
+	void DeleteTail();
 };
 
 class Game
 {
 	private:
 	View* myview;
-	list<class Rabbit> rabbits;
-	list<Coord> body;
-
+	list<Rabbit> rabbits;
+	Snake snake;
+	
 	public:
 	Game(View* v);
 	~Game();
 	list<Rabbit> Rabbits();
-	list<Coord> Snake();
-//
-//	void update();
+	Snake& GetSnake();
+	void update_snake();
+	void update();
+	void quit(int key);
 };

@@ -1,6 +1,7 @@
 #include "tui.h"
 #include "gui.h"
 #include "game.h"
+#include "controller.h"
 #include <string.h>
 #include <iostream>
 
@@ -11,18 +12,22 @@ int main(int ac, char** av)
 
 	v = new Tui;
 	Game m(v);
-	
-	list<Coord> snake = m.Snake();
-	list<Coord> rabbits;
+	Snake& snake = m.GetSnake();
+
+	HumanC c(v,snake);
+//
+	list<pair<int,int>> snake_body = snake.WhatCoords();
+	list<pair<int,int>> rabbits;
 	for(Rabbit it : m.Rabbits())
 	{
 		rabbits.push_back(it.WhatCoords());
 	};
 
 	v->DrawList(rabbits, 46);
-	v->DrawList(snake, 43);
+	v->DrawList(snake_body, 43);
+//это всё нужно куда-то убрать
+	v->runloop();
 	
-	getchar();
 	//printf("\e[?h");
 	return 0;
 }
@@ -36,6 +41,7 @@ int main(int ac, char** av)
 
 
 //https://habr.com/ru/post/155201/ мейкфайлы для самых маленьких
+//https://qastack.ru/programming/2394609/makefile-header-dependencies почитать про зависимости
 
 //https://www.cyberforum.ru/cpp-linux/thread937512.html
 
