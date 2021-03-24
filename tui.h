@@ -7,6 +7,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <termios.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -19,6 +21,7 @@ class Tui: public View //чтобы была возможность запуст
 
 	static function<void(void)> onwinch;
 	static void winch(int n);
+	struct termios orig_termios;
 
 	public:
 	Tui();

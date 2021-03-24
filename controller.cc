@@ -15,5 +15,23 @@ HumanC::~HumanC()
 
 void HumanC::OnKey(int key)
 {
-//управляет змеей
+	
+	switch(key)
+	{
+		case 'A':
+		mysnake.set_direct(UP);
+		break;
+		
+		case 'B':
+		mysnake.set_direct(DOWN);
+		break;
+
+		case 'C':
+		mysnake.set_direct(RIGHT);
+		break;
+
+		case 'D':
+		mysnake.set_direct(LEFT);
+		break;
+	}
 }

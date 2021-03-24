@@ -10,3 +10,8 @@ $(EXECUTABLE): $(OBJECTS)
 
 clear:
 	$(RM) $(OBJECTS) $(EXECUTABLE)
+
+depend:
+	$(CC) -MM $(OBJECTS: .o=.cpp) > .depend
+
+include .depend

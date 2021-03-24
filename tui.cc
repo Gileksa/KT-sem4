@@ -1,5 +1,6 @@
 #include "tui.h"
 #include <poll.h>
+#include <string.h>
 
 using namespace std;
 
@@ -7,17 +8,25 @@ function<void(void)> Tui::onwinch;
 
 Tui :: Tui()
 {
+	//tcgetattr, запомнили перед тем как испортить cfmakerow, tcsetattr прочитать-поменять-переделать
+	struct termios trm;
+	tcgetattr(0, &trm);
+	orig_termios = trm;
+	cfmakeraw(&trm);
+    	//new_termios.c_lflag &= ~ECHO;
+    	tcsetattr(0, TCSAFLUSH, &trm);
+
 	setbuf(stdout, NULL);			//дебуферизовать для красоты
 	draw();					//нарисовать рамочку
 
 	onwinch = bind(&Tui::draw, this);
 	signal(SIGWINCH, &Tui::winch);		//для ресайза
-//tcgetattr, запомнили перед тем как испортить cfmakerow, tcsetattr прочитать-поменять-переделать 
 }
 
 Tui::~Tui()
 {
 	//tcsetattr старых значений - вспомнить
+	tcsetattr(0, TCSAFLUSH, &orig_termios);
 }
 
 struct winsize Tui::WhatSize()
@@ -160,8 +169,7 @@ void Tui::runloop()
 	}
 };
 
-void Tui::quit()
+void Tui::quit() //для проверки, прошла ли подписка на клавиши. Будет выходить при нажатии q, Enter
 {
 	running = false;
 }
-

@@ -33,6 +33,8 @@ class Snake
 	Direction WhatDirect();
 	void NewHead(pair<int,int> head);
 	void DeleteTail();
+	
+	void set_direct(Direction d);
 };
 
 class Game
@@ -50,4 +52,5 @@ class Game
 	void update_snake();
 	void update();
 	void quit(int key);
+	void turn_up();
 };

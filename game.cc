@@ -2,7 +2,6 @@
 #include "tui.h"
 #include <time.h>
 
-
 using namespace std::placeholders;
 
 ///////////////////SNAKE/////////////////////////
@@ -45,6 +44,11 @@ Snake::~Snake()
 
 };
 
+void Snake::set_direct(Direction d)
+{
+	direct = d;
+}
+
 ///////////////////RABBIT/////////////////////////
 
 Rabbit::Rabbit(int x, int y)
@@ -80,7 +84,17 @@ Game::Game(View* v)
 	}
 	snake = Snake();
 
-	myview->SetOnTime(500, bind(&Game::update, this));
+	list<pair<int,int>> snake_body = snake.WhatCoords();
+	list<pair<int,int>> rabbits;
+	for(Rabbit it : Rabbits())
+	{
+		rabbits.push_back(it.WhatCoords());
+	};
+
+	myview->DrawList(rabbits, 46);
+	myview->DrawList(snake_body, 43);
+
+	myview->SetOnTime(200, bind(&Game::update, this));
 	myview->SetOnKey(bind(&Game::quit, this, _1));
 }; 
 
@@ -100,7 +114,7 @@ Snake& Game::GetSnake()
 	return snake;
 };
 
-//обновление
+
 void Game::update_snake()
 {
 	//новая голова
