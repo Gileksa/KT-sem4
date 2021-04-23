@@ -34,6 +34,11 @@ void Snake::NewHead(pair<int,int> head)
 	body.push_back(head);
 };
 
+void Snake::NewTail(pair<int,int> tail)
+{
+	body.push_front(tail);
+};
+
 void Snake::DeleteTail()
 {
 	body.pop_front();
@@ -74,18 +79,37 @@ Game::Game(View* v)
 {
 	int i;
 	myview = v;
-	struct winsize w = myview->WhatSize();
+	w = myview->WhatSize();
 	srand(time(NULL));
 	for(i = 0; i < 10; i++)
 	{
-		int x = rand() % (w.ws_col - 6) + 3;
-		int y = rand() % (w.ws_row - 6) + 3;
+		int x = rand() % (w.second - 6) + 3;
+		int y = rand() % (w.first - 6) + 3;
 		rabbits.push_back(Rabbit(x,y));
 	}
 	snake = Snake();
-
 	list<pair<int,int>> snake_body = snake.WhatCoords();
 	list<pair<int,int>> rabbits;
+
+	for(i = 0; i < (w.first); i++)
+	{
+		barrier.push_back(make_pair(0,i));
+		barrier.push_back(make_pair(2,i));
+		barrier.push_back(make_pair(w.second - 1,i));
+		barrier.push_back(make_pair(w.second,i));
+	}
+
+	for(i = 2; i < (w.second - 1); i++)
+	{
+		barrier.push_back(make_pair(i,0));
+		barrier.push_back(make_pair(i, w.first - 1));
+	}
+
+	for(pair<int,int> it : snake_body)
+	{
+		barrier.push_back(it);
+	}
+
 	for(Rabbit it : Rabbits())
 	{
 		rabbits.push_back(it.WhatCoords());
@@ -94,7 +118,7 @@ Game::Game(View* v)
 	myview->DrawList(rabbits, 46);
 	myview->DrawList(snake_body, 43);
 
-	myview->SetOnTime(200, bind(&Game::update, this));
+	myview->SetOnTime(50, bind(&Game::update, this));
 	myview->SetOnKey(bind(&Game::quit, this, _1));
 }; 
 
@@ -117,9 +141,8 @@ Snake& Game::GetSnake()
 
 void Game::update_snake()
 {
-	//новая голова
 	list<pair<int,int>> body = snake.WhatCoords();
-	pair<int,int> head = body.back();
+	head = body.back();
 	switch(snake.WhatDirect())
 	{
 		case RIGHT:
@@ -136,24 +159,82 @@ void Game::update_snake()
 			break;
 			
 	}
+	
 	snake.NewHead(head);
+	barrier.push_back(head);
 	myview->DrawSegment(head, 43);
+	//myview->DrawList(body, 43);
 
 	//стереть хвост
 	pair<int,int> tail = body.front();
+
+	list<pair<int,int>>::iterator it = barrier.begin();
+	while(it!=barrier.end())
+	{
+		if((*it) == tail)
+		{
+			barrier.erase(it);
+			break;
+		}
+		else 
+			it++;
+	}
 	myview->ClearSegment(tail);
 	snake.DeleteTail();
+	//myview->DrawList(barrier, 49);
 };
 
-void update_rabbits(list<Rabbit> r)
+void Game::update_rabbits(pair<int,int> head)
 {
-
+	list<Rabbit>::iterator it = rabbits.begin();
+	while(it!=rabbits.end())
+	{
+		if((*it).WhatCoords() == head)
+		{
+			remove_rabbit(*it);
+			break;
+		}
+		else 
+			it++;
+	}
 };
 
 void Game::update()
 {
+	update_rabbits(head);
 	update_snake();
-	update_rabbits(rabbits);
+	//for(Rabbit it : rabbits)
+	//{
+	//	myview->DrawSegment((*it).WhatCoords(), 46);
+	//}
+};
+
+void Game::remove_rabbit(Rabbit r)
+{
+	pair<int,int> tail = (snake.WhatCoords()).front();
+	list<Rabbit>::iterator it = rabbits.begin();
+	while(it!=rabbits.end())
+	{
+		if((*it).WhatCoords() == r.WhatCoords())
+		{
+			rabbits.erase(it);
+			break;
+		}
+		else 
+			it++;
+	}
+	snake.NewTail(tail);
+	srand(time(NULL));
+	int x = rand() % (w.second - 6) + 3;
+	int y = rand() % (w.first - 6) + 3;
+	rabbits.push_front(Rabbit(x,y));
+	//printf("%d;%d", x, y);
+	myview->DrawSegment(make_pair(x,y), 46);
+};
+
+list<pair<int,int>> Game::coords_barrier()
+{
+	return barrier;
 };
 
 

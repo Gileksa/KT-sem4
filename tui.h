@@ -30,7 +30,7 @@ class Tui: public View //чтобы была возможность запуст
 	pair<int, timerfn> timer;
 	list<keyfn> keys;
 
-	struct winsize WhatSize();
+	pair<int,int> WhatSize();
 	void DrawList(list<pair<int,int>> object, int color);
 	void DrawSegment(pair<int, int> object, int color);
 	void ClearSegment(pair<int, int> object);

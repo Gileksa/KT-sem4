@@ -20,3 +20,19 @@ class HumanC
 	HumanC(View* v, Snake& s);
 	~HumanC();
 };
+
+class DumpC
+{
+	private:
+	View* myview;
+	Game& mygame;
+	Snake& mysnake;
+
+	public:
+	//bool eat;
+	DumpC(View* v, Game& m, Snake& s);
+	~DumpC();
+	void control();
+	bool get_barrier(pair<int,int> head);
+	bool get_rabbit(pair<int,int> head);
+};

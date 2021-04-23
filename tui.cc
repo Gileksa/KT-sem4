@@ -16,6 +16,7 @@ Tui :: Tui()
     	//new_termios.c_lflag &= ~ECHO;
     	tcsetattr(0, TCSAFLUSH, &trm);
 
+	setbuf(stdin, NULL);
 	setbuf(stdout, NULL);			//дебуферизовать для красоты
 	draw();					//нарисовать рамочку
 
@@ -29,11 +30,12 @@ Tui::~Tui()
 	tcsetattr(0, TCSAFLUSH, &orig_termios);
 }
 
-struct winsize Tui::WhatSize()
+pair <int,int> Tui::WhatSize()
 {
 	struct winsize w;
     	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	return w;
+	pair<int,int> p = make_pair(w.ws_row,w.ws_col);
+	return p;
 }
 
 void Tui::winch(int n)
@@ -74,6 +76,7 @@ void DrawHorisontal(int y_start, int x_start, int length)
 		GoTo(y_start, x_start + i + 1);
 	}
 	SetColor(0);
+	GoTo(0,0);
 };
 
 void DrawVertical(int y_start, int x_start, int length)
@@ -89,6 +92,7 @@ void DrawVertical(int y_start, int x_start, int length)
 	}
 	Put(2);
 	SetColor(0);
+	GoTo(0,0);
 }
 
 
@@ -98,14 +102,16 @@ void DrawFrame(int lines, int columns)
 	DrawVertical(1, 0, lines - 2);
 	DrawVertical(1, columns - 1, (lines - 2));
 	DrawHorisontal(lines -1, 0, columns);
+	GoTo(0,0);
 };
 
 void Tui :: draw()
 {
 	GoTo(0,0); 
 	ClearScreen(); 				
-	struct winsize w = WhatSize(); 		
- 	DrawFrame(w.ws_row,w.ws_col);
+	pair<int,int> p = WhatSize(); 		
+ 	DrawFrame(p.first,p.second);
+	GoTo(0,0);
 };
 
 
@@ -119,6 +125,7 @@ void Tui::DrawList(list<pair<int,int>> object, int color)
 		Put(1);
 	};
 	SetColor(0);
+	GoTo(0,0);
 }
 
 void Tui::DrawSegment(pair<int, int> object, int color)
@@ -127,6 +134,7 @@ void Tui::DrawSegment(pair<int, int> object, int color)
 	GoTo(object.second,object.first);
 	Put(1);
 	SetColor(0);
+	GoTo(0,0);
 }
 
 void Tui::ClearSegment(pair<int, int> object)

@@ -7,18 +7,23 @@
 
 int main(int ac, char** av)
 {	
-	setbuf(stdin, NULL);
-	//printf("\e[!l");
-	View *v;
-
-	v = new Tui;
+	View* v = View::get(ac, av[1]);
 	Game m(v);
 	Snake& snake = m.GetSnake();
-	HumanC c(v,snake);
 
+	if(ac < 3)
+	{
+		HumanC c(v, snake);
+	}
+
+	if(ac == 3)
+	{
+		if((strcmp(av[2], "dump") == 0) || (strcmp(av[2], "d") == 0))
+			DumpC c(v, m, snake);
+		else
+		HumanC c(v, snake);
+	}
 	v->runloop();
-	
-	//printf("\e[?h");
 
 	delete v;
 	return 0;
